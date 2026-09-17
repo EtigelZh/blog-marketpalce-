@@ -1,0 +1,71 @@
+services:
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - rabbitmq
+      - mailpit
+      - minio
+    volumes:
+      - ./src:/app/src
+      - ./migrations:/app/migrations
+      - ./alembic.ini:/app/alembic.ini
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: blog_marketplace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+  worker:
+    build: .
+    command: python -m src.app.workers.email
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - rabbitmq
+      - mailpit
+      - minio
+    volumes:
+      - ./src:/app/src
+
+  minio:
+    image: quay.io/minio/minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio12345
+    volumes:
+      - minio_data:/data
+      
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  minio_data:
