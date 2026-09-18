@@ -44,7 +44,7 @@ services:
       - "1025:1025"
   worker:
     build: .
-    command: python -m src.app.workers.email
+    command: dramatiq src.app.workers.email
     env_file:
       - .env
     depends_on:
@@ -58,7 +58,7 @@ services:
 
   embeddings-worker:
     build: .
-    command: python -m src.app.workers.embeddings
+    command: dramatiq src.app.workers.embeddings
     env_file:
       - .env
     depends_on:
@@ -67,6 +67,7 @@ services:
     volumes:
       - ./src:/app/src
       - fastembed_cache:/tmp/fastembed_cache
+      - ./logs:/app/logs
 
   minio:
     image: quay.io/minio/minio
