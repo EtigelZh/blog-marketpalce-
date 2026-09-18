@@ -4,7 +4,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from src.app.config.settings import settings
-from src.app.database.base import Base
+from src.app.database.base import Base, utcnow
 
 
 class ArticleEmbedding(Base):
@@ -24,7 +24,7 @@ class ArticleEmbedding(Base):
     )
 
     updated_at: Mapped[datetime] = mapped_column(
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=utcnow,
+        onupdate=utcnow,
         nullable=False,
     )

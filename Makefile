@@ -1,7 +1,8 @@
 PY_SRCS=src
+PY_LINT_TARGETS=src tests
 RADON_MIN_MI=65
 
-.PHONY: help lint fmt type security cc mi hal raw check
+.PHONY: help lint fmt type security cc mi hal raw test check
 
 help:
 	@echo "Доступные команды:"
@@ -13,16 +14,17 @@ help:
 	@echo "  mi       - индекс поддерживаемости Radon"
 	@echo "  hal      - метрики Halstead"
 	@echo "  raw      - количество строк кода"
+	@echo "  test     - запуск тестов Pytest"
 	@echo "  check    - запуск всех проверок"
 
 lint:
-	poetry run ruff check $(PY_SRCS) --fix
+	poetry run ruff check $(PY_LINT_TARGETS) --fix
 
 fmt:
-	poetry run ruff format $(PY_SRCS)
+	poetry run ruff format $(PY_LINT_TARGETS)
 
 type:
-	poetry run mypy $(PY_SRCS)
+	poetry run mypy $(PY_LINT_TARGETS)
 
 security:
 	poetry run bandit -r $(PY_SRCS) -lll -x .venv,venv,build,dist,migrations,tests
@@ -39,4 +41,7 @@ hal:
 raw:
 	poetry run radon raw $(PY_SRCS)
 
-check: lint fmt type security cc mi hal raw
+test:
+	poetry run pytest
+
+check: lint fmt type security cc mi hal raw test
