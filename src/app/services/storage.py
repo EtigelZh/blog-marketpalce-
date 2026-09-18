@@ -1,8 +1,9 @@
-import json
 from io import BytesIO
+import json
 from uuid import uuid4
 
 from minio import Minio
+
 from src.app.config.settings import settings
 
 
@@ -60,8 +61,4 @@ class StorageService:
             content_type=content_type,
         )
 
-        return (
-            f"{settings.minio_public_endpoint}/"
-            f"{settings.minio_bucket}/"
-            f"{object_name}"
-        )
+        return f"{settings.minio_public_endpoint}/{settings.minio_bucket}/{object_name}"

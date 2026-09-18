@@ -3,6 +3,7 @@ from datetime import UTC, datetime, timedelta
 import jwt
 from loguru import logger
 from pwdlib import PasswordHash
+
 from src.app.config.settings import settings
 from src.app.database.models.user import User
 from src.app.repositories.user import UserRepository

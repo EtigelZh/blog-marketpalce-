@@ -4,8 +4,8 @@ from typing import Any
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.app.database.models.deleted_article import DeletedArticle
 
+from src.app.database.models.deleted_article import DeletedArticle
 from tests.conftest import FakeMessagingService
 
 FAKE_IMAGE = ("test.png", b"\x89PNG\r\n\x1a\n", "image/png")

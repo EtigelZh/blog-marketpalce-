@@ -37,10 +37,10 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_from: str = "noreply@blog-marketplace.local"
 
-    minio_endpoint: str
-    minio_public_endpoint: str
-    minio_access_key: str
-    minio_secret_key: str
+    minio_endpoint: str = ""
+    minio_public_endpoint: str = ""
+    minio_access_key: str = ""
+    minio_secret_key: str = ""
     minio_bucket: str = "articles"
     minio_secure: bool = False
 
@@ -49,5 +49,6 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
 
 settings = Settings()

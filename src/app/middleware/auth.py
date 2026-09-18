@@ -1,9 +1,10 @@
-import jwt
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
+import jwt
 from loguru import logger
-from src.app.config.settings import settings
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+
+from src.app.config.settings import settings
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -24,9 +25,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         path = request.url.path
 
         is_public_read = request.method == "GET" and (
-            path == "/categories"
-            or path == "/articles"
-            or path.startswith("/articles/")
+            path == "/categories" or path == "/articles" or path.startswith("/articles/")
         )
 
         is_public_qa = request.method == "POST" and path == "/qa/ask"

@@ -40,7 +40,8 @@ dev = [
     "radon (>=6.0.1,<7.0.0)",
     "pytest (>=9.1.1,<10.0.0)",
     "pytest-asyncio (>=1.4.0,<2.0.0)",
-    "httpx (>=0.28.1,<0.29.0)"
+    "httpx (>=0.28.1,<0.29.0)",
+    "pre-commit (>=4.6.2,<5.0.0)"
 ]
 
 [tool.ruff]
@@ -54,6 +55,11 @@ select = ["E4", "E7", "E9", "F", "W", "I", "UP", "B", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/conftest.py" = ["E402"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src", "tests"]
+combine-as-imports = true
+force-sort-within-sections = true
 
 [tool.ruff.format]
 quote-style = "double"

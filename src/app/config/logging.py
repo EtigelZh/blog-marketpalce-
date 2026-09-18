@@ -1,6 +1,7 @@
 import sys
 
 from loguru import logger
+
 from src.app.config.settings import settings
 
 

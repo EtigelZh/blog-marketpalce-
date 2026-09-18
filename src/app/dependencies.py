@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import Cookie, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.app.database.models.user import User
 from src.app.database.session import get_session
 from src.app.repositories.article import ArticleRepository
@@ -119,6 +120,7 @@ async def get_current_user(
         )
 
     return user
+
 
 def get_storage_service() -> StorageService:
     return StorageService()

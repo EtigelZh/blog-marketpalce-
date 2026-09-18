@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.app.database.models.article import Article
 from src.app.database.models.article_embedding import ArticleEmbedding
 

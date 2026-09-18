@@ -1,8 +1,8 @@
 from collections.abc import Callable
 
 from httpx import AsyncClient
-from src.app.database.models.article import Article
 
+from src.app.database.models.article import Article
 from tests.conftest import FakeQaService
 
 

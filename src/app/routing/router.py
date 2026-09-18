@@ -11,6 +11,7 @@ from fastapi import (
     UploadFile,
     status,
 )
+
 from src.app.database.models.user import User
 from src.app.dependencies import (
     get_article_service,
@@ -71,10 +72,7 @@ async def get_articles(
         search=search,
     )
 
-    return [
-        ArticleResponse.model_validate(article)
-        for article in articles
-    ]
+    return [ArticleResponse.model_validate(article) for article in articles]
 
 
 @router.post(
@@ -268,10 +266,7 @@ async def get_categories(
 ) -> list[CategoryResponse]:
     categories = await service.get_all()
 
-    return [
-        CategoryResponse.model_validate(category)
-        for category in categories
-    ]
+    return [CategoryResponse.model_validate(category) for category in categories]
 
 
 @router.post(
@@ -312,8 +307,5 @@ async def ask_question(
 
     return AskResponse(
         answer=answer,
-        sources=[
-            ArticleSource(id=article.id, title=article.title)
-            for article in sources
-        ],
+        sources=[ArticleSource(id=article.id, title=article.title) for article in sources],
     )

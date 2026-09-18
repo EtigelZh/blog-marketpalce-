@@ -1,4 +1,5 @@
 from loguru import logger
+
 from src.app.database.models.article import Article
 from src.app.repositories.article import ArticleRepository
 from src.app.services.category import CategoryService
@@ -93,9 +94,7 @@ class ArticleService:
             if category is None:
                 raise ValueError("Category not found")
 
-        should_reembed = (
-            title is not None and title != article.title
-        ) or (
+        should_reembed = (title is not None and title != article.title) or (
             text is not None and text != article.text
         )
 

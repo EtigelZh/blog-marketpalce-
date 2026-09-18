@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 from fastembed import TextEmbedding
+
 from src.app.config.settings import settings
 
 

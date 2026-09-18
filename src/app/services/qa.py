@@ -2,6 +2,7 @@ import asyncio
 
 from loguru import logger
 from openai import OpenAI
+
 from src.app.config.settings import settings
 from src.app.database.models.article import Article
 from src.app.repositories.embedding import EmbeddingRepository

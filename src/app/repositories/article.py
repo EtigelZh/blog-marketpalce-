@@ -1,5 +1,6 @@
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.app.database.models.article import Article
 from src.app.database.models.deleted_article import DeletedArticle
 
@@ -44,9 +45,7 @@ class ArticleRepository:
         return list(result.scalars().all())
 
     async def get_by_id(self, article_id: int) -> Article | None:
-        result = await self.session.execute(
-            select(Article).where(Article.id == article_id)
-        )
+        result = await self.session.execute(select(Article).where(Article.id == article_id))
 
         return result.scalar_one_or_none()
 

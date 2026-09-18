@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
+
 from src.app.dependencies import get_auth_service
 from src.app.schemas.user import LoginRequest, UserCreate, UserResponse
 from src.app.services.auth import AuthService

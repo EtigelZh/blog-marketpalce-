@@ -3,6 +3,7 @@ from typing import Any
 
 import aio_pika
 from aio_pika import DeliveryMode, Message
+
 from src.app.config.settings import settings
 
 

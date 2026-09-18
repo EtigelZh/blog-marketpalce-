@@ -1,4 +1,5 @@
 from sqlalchemy.exc import IntegrityError
+
 from src.app.database.models.category import Category
 from src.app.repositories.category import CategoryRepository
 

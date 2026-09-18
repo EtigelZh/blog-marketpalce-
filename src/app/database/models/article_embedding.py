@@ -3,6 +3,7 @@ from datetime import datetime
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
+
 from src.app.config.settings import settings
 from src.app.database.base import Base, utcnow
 

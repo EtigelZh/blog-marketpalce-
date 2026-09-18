@@ -1,8 +1,8 @@
 import asyncio
-import os
-import subprocess
 from collections.abc import AsyncGenerator, Awaitable, Callable
+import os
 from pathlib import Path
+import subprocess
 from typing import Any
 
 os.environ.setdefault("POSTGRES_HOST", "localhost")
@@ -18,10 +18,11 @@ os.environ.setdefault("MINIO_SECRET_KEY", "test")
 os.environ.setdefault("LLM_API_KEY", "test")
 
 import asyncpg
+from httpx import ASGITransport, AsyncClient
 import pytest
 import pytest_asyncio
-from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
 from src.app.config.settings import settings
 from src.app.database.models.article import Article
 from src.app.database.session import engine, get_session
@@ -44,9 +45,7 @@ class FakeMessagingService:
         self.sent_emails.append(email)
 
     async def send_embedding_task(self, article_id: int, title: str, text: str) -> None:
-        self.sent_embedding_tasks.append(
-            {"article_id": article_id, "title": title, "text": text}
-        )
+        self.sent_embedding_tasks.append({"article_id": article_id, "title": title, "text": text})
 
 
 class FakeStorageService:
