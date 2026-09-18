@@ -1,3 +1,4 @@
+from loguru import logger
 from src.app.database.models.article import Article
 from src.app.repositories.article import ArticleRepository
 from src.app.services.category import CategoryService
@@ -62,6 +63,8 @@ class ArticleService:
             text=article.text,
         )
 
+        logger.bind(article_id=article.id, author_id=author_id).info("Article created")
+
         return article
 
     async def update(
@@ -79,6 +82,9 @@ class ArticleService:
             return None
 
         if article.author_id != user_id:
+            logger.bind(article_id=article_id, user_id=user_id).warning(
+                "Permission denied for article update"
+            )
             raise PermissionError("You cannot update this article")
 
         if category_id is not None:
@@ -108,6 +114,8 @@ class ArticleService:
                 text=updated_article.text,
             )
 
+        logger.bind(article_id=article_id, user_id=user_id).info("Article updated")
+
         return updated_article
 
     async def delete(
@@ -121,8 +129,13 @@ class ArticleService:
             return False
 
         if article.author_id != user_id:
+            logger.bind(article_id=article_id, user_id=user_id).warning(
+                "Permission denied for article deletion"
+            )
             raise PermissionError("You cannot delete this article")
 
         await self.repository.delete(article)
+
+        logger.bind(article_id=article_id, user_id=user_id).info("Article deleted")
 
         return True

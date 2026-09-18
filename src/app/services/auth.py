@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, timedelta
 
 import jwt
+from loguru import logger
 from pwdlib import PasswordHash
 from src.app.config.settings import settings
 from src.app.database.models.user import User
@@ -27,6 +28,7 @@ class AuthService:
         existing_user = await self.repository.get_by_email(email)
 
         if existing_user is not None:
+            logger.bind(email=email).warning("Registration attempt with existing email")
             raise ValueError("User already exists")
 
         hashed_password = password_hash.hash(password)
@@ -38,6 +40,8 @@ class AuthService:
 
         await self.messaging_service.send_registration_email(user.email)
 
+        logger.bind(user_id=user.id, email=user.email).info("User registered")
+
         return user
 
     async def authenticate(
@@ -48,10 +52,14 @@ class AuthService:
         user = await self.repository.get_by_email(email)
 
         if user is None:
+            logger.bind(email=email).warning("Login attempt for unknown email")
             raise ValueError("Invalid credentials")
 
         if not password_hash.verify(password, user.password_hash):
+            logger.bind(email=email).warning("Login attempt with wrong password")
             raise ValueError("Invalid credentials")
+
+        logger.bind(user_id=user.id, email=user.email).info("User logged in")
 
         return user
 

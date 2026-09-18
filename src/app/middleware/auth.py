@@ -1,6 +1,7 @@
 import jwt
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
+from loguru import logger
 from src.app.config.settings import settings
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
@@ -36,6 +37,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
         token = request.cookies.get("access_token")
 
         if token is None:
+            logger.bind(path=path, method=request.method).debug(
+                "Rejected request without access token"
+            )
             return JSONResponse(
                 status_code=401,
                 content={"detail": "Not authenticated"},
@@ -48,6 +52,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 algorithms=[settings.jwt_algorithm],
             )
         except jwt.InvalidTokenError:
+            logger.bind(path=path, method=request.method).debug(
+                "Rejected request with invalid token"
+            )
             return JSONResponse(
                 status_code=401,
                 content={"detail": "Invalid token"},

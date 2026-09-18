@@ -16,6 +16,7 @@ services:
       - ./migrations:/app/migrations
       - ./alembic.ini:/app/alembic.ini
       - fastembed_cache:/tmp/fastembed_cache
+      - ./logs:/app/logs
 
   db:
     image: pgvector/pgvector:pg18
@@ -53,6 +54,7 @@ services:
       - minio
     volumes:
       - ./src:/app/src
+      - ./logs:/app/logs
 
   embeddings-worker:
     build: .

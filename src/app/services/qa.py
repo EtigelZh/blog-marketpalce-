@@ -1,5 +1,6 @@
 import asyncio
 
+from loguru import logger
 from openai import OpenAI
 from src.app.config.settings import settings
 from src.app.database.models.article import Article
@@ -32,6 +33,8 @@ class QaService:
             limit=settings.rag_top_k,
         )
 
+        logger.bind(sources_count=len(articles)).info("Question asked")
+
         if not articles:
             return (
                 "В базе знаний блога пока нет статей, чтобы ответить на этот вопрос.",
@@ -43,7 +46,11 @@ class QaService:
             for article in articles
         )
 
-        answer = await asyncio.to_thread(self._generate_answer, question, context)
+        try:
+            answer = await asyncio.to_thread(self._generate_answer, question, context)
+        except Exception:
+            logger.exception("LLM call failed")
+            raise
 
         return answer, articles
 

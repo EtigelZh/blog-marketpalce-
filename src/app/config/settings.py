@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "Blog Marketplace"
     debug: bool = False
+    log_level: str = "INFO"
 
     postgres_db: str = ""
     postgres_user: str = ""
