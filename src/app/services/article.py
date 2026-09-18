@@ -1,6 +1,7 @@
 from src.app.database.models.article import Article
 from src.app.repositories.article import ArticleRepository
 from src.app.services.category import CategoryService
+from src.app.services.messaging import MessagingService
 
 
 class ArticleService:
@@ -8,9 +9,11 @@ class ArticleService:
         self,
         repository: ArticleRepository,
         category_service: CategoryService,
+        messaging_service: MessagingService,
     ) -> None:
         self.repository = repository
         self.category_service = category_service
+        self.messaging_service = messaging_service
 
     async def get_all(
         self,
@@ -45,13 +48,21 @@ class ArticleService:
         if category is None:
             raise ValueError("Category not found")
 
-        return await self.repository.create(
+        article = await self.repository.create(
             title=title,
             text=text,
             image=image,
             category_id=category_id,
             author_id=author_id,
         )
+
+        await self.messaging_service.send_embedding_task(
+            article_id=article.id,
+            title=article.title,
+            text=article.text,
+        )
+
+        return article
 
     async def update(
         self,
@@ -76,13 +87,28 @@ class ArticleService:
             if category is None:
                 raise ValueError("Category not found")
 
-        return await self.repository.update(
+        should_reembed = (
+            title is not None and title != article.title
+        ) or (
+            text is not None and text != article.text
+        )
+
+        updated_article = await self.repository.update(
             article=article,
             title=title,
             text=text,
             image=image,
             category_id=category_id,
         )
+
+        if should_reembed:
+            await self.messaging_service.send_embedding_task(
+                article_id=updated_article.id,
+                title=updated_article.title,
+                text=updated_article.text,
+            )
+
+        return updated_article
 
     async def delete(
         self,

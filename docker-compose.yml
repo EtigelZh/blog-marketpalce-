@@ -15,9 +15,10 @@ services:
       - ./src:/app/src
       - ./migrations:/app/migrations
       - ./alembic.ini:/app/alembic.ini
+      - fastembed_cache:/tmp/fastembed_cache
 
   db:
-    image: postgres:18
+    image: pgvector/pgvector:pg18
     environment:
       POSTGRES_DB: blog_marketplace
       POSTGRES_USER: postgres
@@ -53,6 +54,18 @@ services:
     volumes:
       - ./src:/app/src
 
+  embeddings-worker:
+    build: .
+    command: python -m src.app.workers.embeddings
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - ./src:/app/src
+      - fastembed_cache:/tmp/fastembed_cache
+
   minio:
     image: quay.io/minio/minio
     command: server /data --console-address ":9001"
@@ -69,3 +82,4 @@ volumes:
   postgres_data:
   rabbitmq_data:
   minio_data:
+  fastembed_cache:

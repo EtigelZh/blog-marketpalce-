@@ -3,7 +3,6 @@ import json
 
 import aio_pika
 from aio_pika.abc import AbstractIncomingMessage
-
 from src.app.config.settings import settings
 from src.app.services.email import send_registration_email
 

@@ -20,12 +20,15 @@ class Settings(BaseSettings):
     rabbitmq_user: str = "guest"
     rabbitmq_password: str = "guest"
     rabbitmq_email_queue: str = "emails"
+    rabbitmq_embedding_queue: str = "article_embeddings"
 
-    smtp_host: str = ""
-    smtp_port: int = 587
-    smtp_user: str = ""
-    smtp_password: str = ""
-    smtp_from: str = ""
+    embedding_model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    embedding_dimensions: int = 384
+    rag_top_k: int = 3
+
+    llm_api_key: str = ""
+    llm_base_url: str = "https://api.groq.com/openai/v1"
+    llm_model: str = "openai/gpt-oss-120b"
 
     smtp_host: str = "mailpit"
     smtp_port: int = 1025

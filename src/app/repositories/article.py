@@ -1,6 +1,7 @@
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.app.database.models.article import Article
+from src.app.database.models.deleted_article import DeletedArticle
 
 
 class ArticleRepository:
@@ -16,9 +17,7 @@ class ArticleRepository:
     ) -> list[Article]:
         offset = (page_number - 1) * page_size
 
-        query = select(Article).where(
-            Article.is_deleted.is_(False),
-        )
+        query = select(Article)
 
         if category_id is not None:
             query = query.where(Article.category_id == category_id)
@@ -46,10 +45,7 @@ class ArticleRepository:
 
     async def get_by_id(self, article_id: int) -> Article | None:
         result = await self.session.execute(
-            select(Article).where(
-                Article.id == article_id,
-                Article.is_deleted.is_(False),
-            )
+            select(Article).where(Article.id == article_id)
         )
 
         return result.scalar_one_or_none()
@@ -103,6 +99,19 @@ class ArticleRepository:
         return article
 
     async def delete(self, article: Article) -> None:
-        article.is_deleted = True
+        archived_article = DeletedArticle(
+            article_id=article.id,
+            title=article.title,
+            text=article.text,
+            image=article.image,
+            category_id=article.category_id,
+            author_id=article.author_id,
+            created_at=article.created_at,
+            updated_at=article.updated_at,
+        )
+
+        self.session.add(archived_article)
+
+        await self.session.delete(article)
 
         await self.session.commit()

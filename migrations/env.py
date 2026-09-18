@@ -7,7 +7,13 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from src.app.config.settings import settings
 from src.app.database.base import Base
-from src.app.database.models import Article, Category, User
+from src.app.database.models import (
+    Article,
+    ArticleEmbedding,
+    Category,
+    DeletedArticle,
+    User,
+)
 
 
 config = context.config

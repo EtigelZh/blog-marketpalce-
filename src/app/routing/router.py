@@ -1,3 +1,4 @@
+import asyncio
 from typing import Annotated
 
 from fastapi import (
@@ -10,21 +11,22 @@ from fastapi import (
     UploadFile,
     status,
 )
-
 from src.app.database.models.user import User
 from src.app.dependencies import (
     get_article_service,
     get_category_service,
     get_current_user,
+    get_qa_service,
     get_storage_service,
 )
 from src.app.routing.auth import router as auth_router
 from src.app.schemas.article import ArticleResponse, ArticleUpdate
 from src.app.schemas.category import CategoryCreate, CategoryResponse
+from src.app.schemas.qa import ArticleSource, AskRequest, AskResponse
 from src.app.services.article import ArticleService
 from src.app.services.category import CategoryService
+from src.app.services.qa import QaService
 from src.app.services.storage import StorageService
-
 
 router = APIRouter()
 
@@ -130,7 +132,8 @@ async def create_article(
             detail="Image size must not exceed 10 MB",
         )
 
-    image_url = storage.upload_image(
+    image_url = await asyncio.to_thread(
+        storage.upload_image,
         content=content,
         filename=image.filename or "image",
         content_type=image.content_type,
@@ -292,3 +295,25 @@ async def create_category(
         ) from error
 
     return CategoryResponse.model_validate(new_category)
+
+
+@router.post(
+    "/qa/ask",
+    response_model=AskResponse,
+)
+async def ask_question(
+    request: AskRequest,
+    service: Annotated[
+        QaService,
+        Depends(get_qa_service),
+    ],
+) -> AskResponse:
+    answer, sources = await service.ask(request.question)
+
+    return AskResponse(
+        answer=answer,
+        sources=[
+            ArticleSource(id=article.id, title=article.title)
+            for article in sources
+        ],
+    )

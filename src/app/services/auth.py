@@ -2,11 +2,10 @@ from datetime import UTC, datetime, timedelta
 
 import jwt
 from pwdlib import PasswordHash
-
 from src.app.config.settings import settings
 from src.app.database.models.user import User
-from src.app.services.messaging import MessagingService
 from src.app.repositories.user import UserRepository
+from src.app.services.messaging import MessagingService
 
 password_hash = PasswordHash.recommended()
 

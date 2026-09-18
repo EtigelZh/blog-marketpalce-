@@ -1,13 +1,16 @@
-from fastapi import Request
-from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
-
-from src.app.config.settings import settings
 import jwt
+from fastapi import Request, Response
+from fastapi.responses import JSONResponse
+from src.app.config.settings import settings
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(
+        self,
+        request: Request,
+        call_next: RequestResponseEndpoint,
+    ) -> Response:
         public_paths = {
             "/",
             "/auth/register",
@@ -17,7 +20,17 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/redoc",
         }
 
-        if request.url.path in public_paths:
+        path = request.url.path
+
+        is_public_read = request.method == "GET" and (
+            path == "/categories"
+            or path == "/articles"
+            or path.startswith("/articles/")
+        )
+
+        is_public_qa = request.method == "POST" and path == "/qa/ask"
+
+        if path in public_paths or is_public_read or is_public_qa:
             return await call_next(request)
 
         token = request.cookies.get("access_token")

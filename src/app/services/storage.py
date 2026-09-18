@@ -3,7 +3,6 @@ from io import BytesIO
 from uuid import uuid4
 
 from minio import Minio
-
 from src.app.config.settings import settings
 
 
